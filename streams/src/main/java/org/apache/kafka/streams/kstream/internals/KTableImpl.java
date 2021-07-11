@@ -134,7 +134,7 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
     private boolean sendOldValues = false;
 
     public KTableImpl(final String name,
-                      final Serde<K> keySerde,
+                      final Serde<? extends K> keySerde,
                       final Serde<V> valueSerde,
                       final Set<String> subTopologySourceNodes,
                       final String queryableStoreName,
@@ -147,7 +147,7 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
     }
 
     public KTableImpl(final String name,
-                      final Serde<K> keySerde,
+                      final Serde<? extends K> keySerde,
                       final Serde<V> valueSerde,
                       final Set<String> subTopologySourceNodes,
                       final String queryableStoreName,
@@ -168,7 +168,7 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
                                   final Named named,
                                   final MaterializedInternal<K, V, KeyValueStore<Bytes, byte[]>> materializedInternal,
                                   final boolean filterNot) {
-        final Serde<K> keySerde;
+        final Serde<? extends K> keySerde;
         final Serde<V> valueSerde;
         final String queryableStoreName;
         final StoreBuilder<TimestampedKeyValueStore<K, V>> storeBuilder;
@@ -283,7 +283,7 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
     private <VR> KTable<K, VR> doMapValues(final ValueMapperWithKey<? super K, ? super V, ? extends VR> mapper,
                                            final Named named,
                                            final MaterializedInternal<K, VR, KeyValueStore<Bytes, byte[]>> materializedInternal) {
-        final Serde<K> keySerde;
+        final Serde<? extends K> keySerde;
         final Serde<VR> valueSerde;
         final String queryableStoreName;
         final StoreBuilder<TimestampedKeyValueStore<K, VR>> storeBuilder;
@@ -438,7 +438,7 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
                                                  final NamedInternal namedInternal,
                                                  final String... stateStoreNames) {
         Objects.requireNonNull(stateStoreNames, "stateStoreNames");
-        final Serde<K> keySerde;
+        final Serde<? extends K> keySerde;
         final Serde<VR> valueSerde;
         final String queryableStoreName;
         final StoreBuilder<TimestampedKeyValueStore<K, VR>> storeBuilder;
@@ -552,13 +552,13 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
 
         if (suppressedInternal.bufferConfig().isLoggingEnabled()) {
             final Map<String, String> topicConfig = suppressedInternal.bufferConfig().getLogConfig();
-            storeBuilder = new InMemoryTimeOrderedKeyValueBuffer.Builder<>(
+            storeBuilder = new InMemoryTimeOrderedKeyValueBuffer.Builder<K, V>(
                 storeName,
                 keySerde,
                 valueSerde)
                 .withLoggingEnabled(topicConfig);
         } else {
-            storeBuilder = new InMemoryTimeOrderedKeyValueBuffer.Builder<>(
+            storeBuilder = new InMemoryTimeOrderedKeyValueBuffer.Builder<K, V>(
                 storeName,
                 keySerde,
                 valueSerde)
@@ -743,7 +743,7 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
         final ProcessorParameters<K, Change<V>, ?, ?> joinThisProcessorParameters = new ProcessorParameters<>(joinThis, joinThisName);
         final ProcessorParameters<K, Change<VO>, ?, ?> joinOtherProcessorParameters = new ProcessorParameters<>(joinOther, joinOtherName);
 
-        final Serde<K> keySerde;
+        final Serde<? extends K> keySerde;
         final Serde<VR> valueSerde;
         final String queryableStoreName;
         final StoreBuilder<TimestampedKeyValueStore<K, VR>> storeBuilder;
@@ -1115,11 +1115,11 @@ public class KTableImpl<K, S, V> extends AbstractStream<K, V> implements KTable<
         builder.internalTopologyBuilder.addInternalTopic(finalRepartitionTopicName, InternalTopicProperties.empty());
 
         final StreamSinkNode<K, SubscriptionResponseWrapper<VO>> foreignResponseSink =
-            new StreamSinkNode<>(
-                renamed.suffixWithOrElseGet("-subscription-response-sink", builder, SINK_NAME),
-                new StaticTopicNameExtractor<>(finalRepartitionTopicName),
-                new ProducedInternal<>(Produced.with(keySerde, responseWrapperSerde))
-            );
+                new StreamSinkNode<>(
+                        renamed.suffixWithOrElseGet("-subscription-response-sink", builder, SINK_NAME),
+                        new StaticTopicNameExtractor<>(finalRepartitionTopicName),
+                        new ProducedInternal<>(Produced.with(keySerde, responseWrapperSerde))
+                );
         builder.addGraphNode(subscriptionJoinForeignNode, foreignResponseSink);
         builder.addGraphNode(foreignJoinSubscriptionNode, foreignResponseSink);
 

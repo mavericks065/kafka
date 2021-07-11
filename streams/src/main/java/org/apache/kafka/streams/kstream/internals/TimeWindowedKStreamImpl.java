@@ -52,7 +52,7 @@ public class TimeWindowedKStreamImpl<K, V, W extends Window> extends AbstractStr
                             final InternalStreamsBuilder builder,
                             final Set<String> subTopologySourceNodes,
                             final String name,
-                            final Serde<K> keySerde,
+                            final Serde<? extends K> keySerde,
                             final Serde<V> valueSerde,
                             final GroupedStreamAggregateBuilder<K, V> aggregateBuilder,
                             final GraphNode graphNode) {

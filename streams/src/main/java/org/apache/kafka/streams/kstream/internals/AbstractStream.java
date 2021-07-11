@@ -47,7 +47,7 @@ import java.util.Set;
 public abstract class AbstractStream<K, V> {
 
     protected final String name;
-    protected final Serde<K> keySerde;
+    protected final Serde<? extends K> keySerde;
     protected final Serde<V> valueSerde;
     protected final Set<String> subTopologySourceNodes;
     protected final GraphNode graphNode;
@@ -65,7 +65,7 @@ public abstract class AbstractStream<K, V> {
     }
 
     AbstractStream(final String name,
-                   final Serde<K> keySerde,
+                   final Serde<? extends K> keySerde,
                    final Serde<V> valueSerde,
                    final Set<String> subTopologySourceNodes,
                    final GraphNode graphNode,
@@ -150,7 +150,7 @@ public abstract class AbstractStream<K, V> {
     }
 
     // for testing only
-    public Serde<K> keySerde() {
+    public Serde<? extends K> keySerde() {
         return keySerde;
     }
 

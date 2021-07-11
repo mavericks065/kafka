@@ -52,7 +52,7 @@ public class SessionWindowedKStreamImpl<K, V> extends AbstractStream<K, V> imple
                                final InternalStreamsBuilder builder,
                                final Set<String> subTopologySourceNodes,
                                final String name,
-                               final Serde<K> keySerde,
+                               final Serde<? extends K> keySerde,
                                final Serde<V> valueSerde,
                                final GroupedStreamAggregateBuilder<K, V> aggregateBuilder,
                                final GraphNode graphNode) {

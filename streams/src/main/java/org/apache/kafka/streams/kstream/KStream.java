@@ -567,7 +567,7 @@ public interface KStream<K, V> {
      *
      * @param mapper a {@link ValueMapper} the computes the new output values
      * @param named  a {@link Named} config used to name the processor in the topology
-     * @param <VR>      the value type of the result stream
+     * @param <VR>   the value type of the result stream
      * @return a {@code KStream} that contains more or less records with unmodified keys and new values of different type
      * @see #selectKey(KeyValueMapper)
      * @see #map(KeyValueMapper)
@@ -583,6 +583,7 @@ public interface KStream<K, V> {
      */
     <VR> KStream<K, VR> flatMapValues(final ValueMapper<? super V, ? extends Iterable<? extends VR>> mapper,
                                       final Named named);
+
     /**
      * Create a new {@code KStream} by transforming the value of each record in this stream into zero or more values
      * with the same key in the new stream.
@@ -616,7 +617,7 @@ public interface KStream<K, V> {
      * is applied to the result {@code KStream}. (cf. {@link #flatMap(KeyValueMapper)})
      *
      * @param mapper a {@link ValueMapperWithKey} the computes the new output values
-     * @param <VR>      the value type of the result stream
+     * @param <VR>   the value type of the result stream
      * @return a {@code KStream} that contains more or less records with unmodified keys and new values of different type
      * @see #selectKey(KeyValueMapper)
      * @see #map(KeyValueMapper)
@@ -666,7 +667,7 @@ public interface KStream<K, V> {
      *
      * @param mapper a {@link ValueMapperWithKey} the computes the new output values
      * @param named  a {@link Named} config used to name the processor in the topology
-     * @param <VR>      the value type of the result stream
+     * @param <VR>   the value type of the result stream
      * @return a {@code KStream} that contains more or less records with unmodified keys and new values of different type
      * @see #selectKey(KeyValueMapper)
      * @see #map(KeyValueMapper)
@@ -772,7 +773,7 @@ public interface KStream<K, V> {
      * A record will be dropped if none of the predicates evaluate to true.
      * This is a stateless record-by-record operation.
      *
-     * @param named  a {@link Named} config used to name the processor in the topology
+     * @param named      a {@link Named} config used to name the processor in the topology
      * @param predicates the ordered list of {@link Predicate} instances
      * @return multiple distinct substreams of this {@code KStream}
      * @deprecated since 2.8. Use {@link #split(Named)} instead.
@@ -795,8 +796,8 @@ public interface KStream<K, V> {
      * on evaluation against the supplied predicates.
      * Stream branching is a stateless record-by-record operation.
      *
-     * @param named  a {@link Named} config used to name the processor in the topology and also to set the name prefix
-     *               for the resulting branches (see {@link BranchedKStream})
+     * @param named a {@link Named} config used to name the processor in the topology and also to set the name prefix
+     *              for the resulting branches (see {@link BranchedKStream})
      * @return {@link BranchedKStream} that provides methods for routing the records to different branches.
      */
     BranchedKStream<K, V> split(final Named named);
@@ -859,8 +860,8 @@ public interface KStream<K, V> {
      * Note that {@code through()} uses a hard coded {@link org.apache.kafka.streams.processor.FailOnInvalidTimestamp
      * timestamp extractor} and does not allow to customize it, to ensure correct timestamp propagation.
      *
-     * @param topic     the topic name
-     * @param produced  the options to use when producing to the topic
+     * @param topic    the topic name
+     * @param produced the options to use when producing to the topic
      * @return a {@code KStream} that contains the exact same (and potentially repartitioned) records as this {@code KStream}
      * @deprecated since 2.6; use {@link #repartition(Repartitioned)} instead
      */
@@ -917,8 +918,8 @@ public interface KStream<K, V> {
      * The specified topic should be manually created before it is used (i.e., before the Kafka Streams application is
      * started).
      *
-     * @param topic       the topic name
-     * @param produced    the options to use when producing to the topic
+     * @param topic    the topic name
+     * @param produced the options to use when producing to the topic
      */
     void to(final String topic,
             final Produced<K, V> produced);
@@ -928,7 +929,7 @@ public interface KStream<K, V> {
      * {@link DefaultPartitioner}.
      * The topic names for each record to send to is dynamically determined based on the {@link TopicNameExtractor}.
      *
-     * @param topicExtractor    the extractor to determine the name of the Kafka topic to write to for each record
+     * @param topicExtractor the extractor to determine the name of the Kafka topic to write to for each record
      */
     void to(final TopicNameExtractor<K, V> topicExtractor);
 
@@ -936,8 +937,8 @@ public interface KStream<K, V> {
      * Dynamically materialize this stream to topics using the provided {@link Produced} instance.
      * The topic names for each record to send to is dynamically determined based on the {@link TopicNameExtractor}.
      *
-     * @param topicExtractor    the extractor to determine the name of the Kafka topic to write to for each record
-     * @param produced          the options to use when producing to the topic
+     * @param topicExtractor the extractor to determine the name of the Kafka topic to write to for each record
+     * @param produced       the options to use when producing to the topic
      */
     void to(final TopicNameExtractor<K, V> topicExtractor,
             final Produced<K, V> produced);
@@ -990,7 +991,7 @@ public interface KStream<K, V> {
      * Note that this is a logical operation and only changes the "interpretation" of the stream, i.e., each record of
      * it was a "fact/event" and is re-interpreted as update now (cf. {@link KStream} vs {@code KTable}).
      *
-     * @param named  a {@link Named} config used to name the processor in the topology
+     * @param named a {@link Named} config used to name the processor in the topology
      * @return a {@link KTable} that contains the same records as this {@code KStream}
      */
     KTable<K, V> toTable(final Named named);
@@ -1018,7 +1019,7 @@ public interface KStream<K, V> {
      * it was a "fact/event" and is re-interpreted as update now (cf. {@link KStream} vs {@code KTable}).
      *
      * @param materialized an instance of {@link Materialized} used to describe how the state store of the
-     *                            resulting table should be materialized.
+     *                     resulting table should be materialized.
      * @return a {@link KTable} that contains the same records as this {@code KStream}
      */
     KTable<K, V> toTable(final Materialized<K, V, KeyValueStore<Bytes, byte[]>> materialized);
@@ -1045,9 +1046,9 @@ public interface KStream<K, V> {
      * Note that this is a logical operation and only changes the "interpretation" of the stream, i.e., each record of
      * it was a "fact/event" and is re-interpreted as update now (cf. {@link KStream} vs {@code KTable}).
      *
-     * @param named  a {@link Named} config used to name the processor in the topology
+     * @param named        a {@link Named} config used to name the processor in the topology
      * @param materialized an instance of {@link Materialized} used to describe how the state store of the
-     *                            resulting table should be materialized.
+     *                     resulting table should be materialized.
      * @return a {@link KTable} that contains the same records as this {@code KStream}
      */
     KTable<K, V> toTable(final Named named,
@@ -1115,6 +1116,10 @@ public interface KStream<K, V> {
      */
     <KR> KGroupedStream<KR, V> groupBy(final KeyValueMapper<? super K, ? super V, KR> keySelector,
                                        final Grouped<KR, V> grouped);
+
+    <KR, KG extends KR> KGroupedStream<KR, V> groupBy2(
+            final KeyValueMapper<? super K, ? super V, KG> keySelector,
+            final Grouped<KG, V> grouped);
 
     /**
      * Group the records by their current key into a {@link KGroupedStream} while preserving the original values
@@ -1392,12 +1397,12 @@ public interface KStream<K, V> {
      * <p>
      * You can retrieve all generated internal topic names via {@link Topology#describe()}.
      *
-     * @param <VO>           the value type of the other stream
-     * @param <VR>           the value type of the result stream
-     * @param otherStream    the {@code KStream} to be joined with this stream
-     * @param joiner         a {@link ValueJoiner} that computes the join result for a pair of matching records
-     * @param windows        the specification of the {@link JoinWindows}
-     * @param streamJoined   a {@link StreamJoined} used to configure join stores
+     * @param <VO>         the value type of the other stream
+     * @param <VR>         the value type of the result stream
+     * @param otherStream  the {@code KStream} to be joined with this stream
+     * @param joiner       a {@link ValueJoiner} that computes the join result for a pair of matching records
+     * @param windows      the specification of the {@link JoinWindows}
+     * @param streamJoined a {@link StreamJoined} used to configure join stores
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoiner}, one for each matched record-pair with the same key and within the joining window intervals
      * @see #leftJoin(KStream, ValueJoiner, JoinWindows, StreamJoined)
@@ -1567,6 +1572,7 @@ public interface KStream<K, V> {
     <VO, VR> KStream<K, VR> leftJoin(final KStream<K, VO> otherStream,
                                      final ValueJoiner<? super V, ? super VO, ? extends VR> joiner,
                                      final JoinWindows windows);
+
     /**
      * Join records of this stream with another {@code KStream}'s records using windowed left equi join with default
      * serializers and deserializers.
@@ -2237,7 +2243,7 @@ public interface KStream<K, V> {
      * For each {@code KStream} record that finds a corresponding record in {@link KTable} the provided
      * {@link ValueJoinerWithKey} will be called to compute a value (with arbitrary type) for the result record.
      * Note that the key is read-only and should not be modified, as this can lead to undefined behaviour.
-     *
+     * <p>
      * The key of the result record is the same as for both joining input records.
      * If an {@code KStream} input record key or value is {@code null} the record will not be included in the join
      * operation and thus no output record will be added to the resulting {@code KStream}.
@@ -2368,8 +2374,8 @@ public interface KStream<K, V> {
      *
      * @param table  the {@link KTable} to be joined with this stream
      * @param joiner a {@link ValueJoiner} that computes the join result for a pair of matching records
-     * @param joined      a {@link Joined} instance that defines the serdes to
-     *                    be used to serialize/deserialize inputs of the joined streams
+     * @param joined a {@link Joined} instance that defines the serdes to
+     *               be used to serialize/deserialize inputs of the joined streams
      * @param <VT>   the value type of the table
      * @param <VR>   the value type of the result stream
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
@@ -2395,7 +2401,7 @@ public interface KStream<K, V> {
      * {@link ValueJoinerWithKey} will be called to compute a value (with arbitrary type) for the result record.
      * The key of the result record is the same as for both joining input records.
      * Note that the key is read-only and should not be modified, as this can lead to undefined behaviour.
-     * 
+     * <p>
      * If an {@code KStream} input record key or value is {@code null} the record will not be included in the join
      * operation and thus no output record will be added to the resulting {@code KStream}.
      * <p>
@@ -2449,8 +2455,8 @@ public interface KStream<K, V> {
      *
      * @param table  the {@link KTable} to be joined with this stream
      * @param joiner a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
-     * @param joined      a {@link Joined} instance that defines the serdes to
-     *                    be used to serialize/deserialize inputs of the joined streams
+     * @param joined a {@link Joined} instance that defines the serdes to
+     *               be used to serialize/deserialize inputs of the joined streams
      * @param <VT>   the value type of the table
      * @param <VR>   the value type of the result stream
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
@@ -2688,12 +2694,12 @@ public interface KStream<K, V> {
      * records to it, and rereading all records from it, such that the join input {@code KStream} is partitioned
      * correctly on its key.
      *
-     * @param table   the {@link KTable} to be joined with this stream
-     * @param joiner  a {@link ValueJoiner} that computes the join result for a pair of matching records
-     * @param joined  a {@link Joined} instance that defines the serdes to
-     *                be used to serialize/deserialize inputs and outputs of the joined streams
-     * @param <VT>    the value type of the table
-     * @param <VR>    the value type of the result stream
+     * @param table  the {@link KTable} to be joined with this stream
+     * @param joiner a {@link ValueJoiner} that computes the join result for a pair of matching records
+     * @param joined a {@link Joined} instance that defines the serdes to
+     *               be used to serialize/deserialize inputs and outputs of the joined streams
+     * @param <VT>   the value type of the table
+     * @param <VR>   the value type of the result stream
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoiner}, one output for each input {@code KStream} record
      * @see #join(KTable, ValueJoiner, Joined)
@@ -2771,12 +2777,12 @@ public interface KStream<K, V> {
      * records to it, and rereading all records from it, such that the join input {@code KStream} is partitioned
      * correctly on its key.
      *
-     * @param table   the {@link KTable} to be joined with this stream
-     * @param joiner  a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
-     * @param joined  a {@link Joined} instance that defines the serdes to
-     *                be used to serialize/deserialize inputs and outputs of the joined streams
-     * @param <VT>    the value type of the table
-     * @param <VR>    the value type of the result stream
+     * @param table  the {@link KTable} to be joined with this stream
+     * @param joiner a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
+     * @param joined a {@link Joined} instance that defines the serdes to
+     *               be used to serialize/deserialize inputs and outputs of the joined streams
+     * @param <VT>   the value type of the table
+     * @param <VR>   the value type of the result stream
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoinerWithKey}, one output for each input {@code KStream} record
      * @see #join(KTable, ValueJoinerWithKey, Joined)
@@ -2804,13 +2810,13 @@ public interface KStream<K, V> {
      * If {@code keyValueMapper} returns {@code null} implying no match exists, no output record will be added to the
      * resulting {@code KStream}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param joiner         a {@link ValueJoiner} that computes the join result for a pair of matching records
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param joiner      a {@link ValueJoiner} that computes the join result for a pair of matching records
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoiner}, one output for each input {@code KStream} record
      * @see #leftJoin(GlobalKTable, KeyValueMapper, ValueJoiner)
@@ -2838,13 +2844,13 @@ public interface KStream<K, V> {
      * If {@code keyValueMapper} returns {@code null} implying no match exists, no output record will be added to the
      * resulting {@code KStream}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param joiner         a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param joiner      a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoinerWithKey}, one output for each input {@code KStream} record
      * @see #leftJoin(GlobalKTable, KeyValueMapper, ValueJoinerWithKey)
@@ -2871,14 +2877,14 @@ public interface KStream<K, V> {
      * If {@code keyValueMapper} returns {@code null} implying no match exists, no output record will be added to the
      * resulting {@code KStream}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param joiner         a {@link ValueJoiner} that computes the join result for a pair of matching records
-     * @param named          a {@link Named} config used to name the processor in the topology
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param joiner      a {@link ValueJoiner} that computes the join result for a pair of matching records
+     * @param named       a {@link Named} config used to name the processor in the topology
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoiner}, one output for each input {@code KStream} record
      * @see #leftJoin(GlobalKTable, KeyValueMapper, ValueJoiner)
@@ -2907,14 +2913,14 @@ public interface KStream<K, V> {
      * If {@code keyValueMapper} returns {@code null} implying no match exists, no output record will be added to the
      * resulting {@code KStream}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param joiner         a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
-     * @param named          a {@link Named} config used to name the processor in the topology
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param joiner      a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
+     * @param named       a {@link Named} config used to name the processor in the topology
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoinerWithKey}, one output for each input {@code KStream} record
      * @see #leftJoin(GlobalKTable, KeyValueMapper, ValueJoinerWithKey)
@@ -2946,13 +2952,13 @@ public interface KStream<K, V> {
      * If no {@link GlobalKTable} record was found during lookup, a {@code null} value will be provided to
      * {@link ValueJoiner}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param valueJoiner    a {@link ValueJoiner} that computes the join result for a pair of matching records
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param valueJoiner a {@link ValueJoiner} that computes the join result for a pair of matching records
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoiner}, one output for each input {@code KStream} record
      * @see #join(GlobalKTable, KeyValueMapper, ValueJoiner)
@@ -2984,13 +2990,13 @@ public interface KStream<K, V> {
      * If no {@link GlobalKTable} record was found during lookup, a {@code null} value will be provided to
      * {@link ValueJoiner}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param valueJoiner    a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param valueJoiner a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoinerWithKey}, one output for each input {@code KStream} record
      * @see #join(GlobalKTable, KeyValueMapper, ValueJoinerWithKey)
@@ -3021,14 +3027,14 @@ public interface KStream<K, V> {
      * If no {@link GlobalKTable} record was found during lookup, a {@code null} value will be provided to
      * {@link ValueJoiner}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param valueJoiner    a {@link ValueJoiner} that computes the join result for a pair of matching records
-     * @param named          a {@link Named} config used to name the processor in the topology
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param valueJoiner a {@link ValueJoiner} that computes the join result for a pair of matching records
+     * @param named       a {@link Named} config used to name the processor in the topology
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoiner}, one output for each input {@code KStream} record
      * @see #join(GlobalKTable, KeyValueMapper, ValueJoiner)
@@ -3060,14 +3066,14 @@ public interface KStream<K, V> {
      * If no {@link GlobalKTable} record was found during lookup, a {@code null} value will be provided to
      * {@link ValueJoinerWithKey}.
      *
-     * @param globalTable    the {@link GlobalKTable} to be joined with this stream
-     * @param keySelector    instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
-     *                       to the key of the {@link GlobalKTable}
-     * @param valueJoiner    a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
-     * @param named          a {@link Named} config used to name the processor in the topology
-     * @param <GK>           the key type of {@link GlobalKTable}
-     * @param <GV>           the value type of the {@link GlobalKTable}
-     * @param <RV>           the value type of the resulting {@code KStream}
+     * @param globalTable the {@link GlobalKTable} to be joined with this stream
+     * @param keySelector instance of {@link KeyValueMapper} used to map from the (key, value) of this stream
+     *                    to the key of the {@link GlobalKTable}
+     * @param valueJoiner a {@link ValueJoinerWithKey} that computes the join result for a pair of matching records
+     * @param named       a {@link Named} config used to name the processor in the topology
+     * @param <GK>        the key type of {@link GlobalKTable}
+     * @param <GV>        the value type of the {@link GlobalKTable}
+     * @param <RV>        the value type of the resulting {@code KStream}
      * @return a {@code KStream} that contains join-records for each key and values computed by the given
      * {@link ValueJoinerWithKey}, one output for each input {@code KStream} record
      * @see #join(GlobalKTable, KeyValueMapper, ValueJoinerWithKey)
@@ -3694,6 +3700,7 @@ public interface KStream<K, V> {
      */
     <VR> KStream<K, VR> transformValues(final ValueTransformerSupplier<? super V, ? extends VR> valueTransformerSupplier,
                                         final String... stateStoreNames);
+
     /**
      * Transform the value of each input record into a new value (with possibly a new type) of the output record.
      * A {@link ValueTransformer} (provided by the given {@link ValueTransformerSupplier}) is applied to each input
@@ -4030,6 +4037,7 @@ public interface KStream<K, V> {
     <VR> KStream<K, VR> transformValues(final ValueTransformerWithKeySupplier<? super K, ? super V, ? extends VR> valueTransformerSupplier,
                                         final Named named,
                                         final String... stateStoreNames);
+
     /**
      * Transform the value of each input record into zero or more new values (with possibly a new
      * type) and emit for each new value a record with the same key of the input record and the value.
@@ -4610,8 +4618,8 @@ public interface KStream<K, V> {
      *                          The supplier should always generate a new instance. Creating a single {@link Processor} object
      *                          and returning the same object reference in {@link ProcessorSupplier#get()} is a
      *                          violation of the supplier pattern and leads to runtime exceptions.
-     * @param stateStoreNames     the names of the state stores used by the processor; not required if the supplier
-     *                            implements {@link ConnectedStoreProvider#stores()}
+     * @param stateStoreNames   the names of the state stores used by the processor; not required if the supplier
+     *                          implements {@link ConnectedStoreProvider#stores()}
      * @see #foreach(ForeachAction)
      * @see #transform(TransformerSupplier, String...)
      */

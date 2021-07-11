@@ -80,7 +80,7 @@ public final class InMemoryTimeOrderedKeyValueBuffer<K, V> implements TimeOrdere
     private final String storeName;
     private final boolean loggingEnabled;
 
-    private Serde<K> keySerde;
+    private Serde<? extends K> keySerde;
     private FullChangeSerde<V> valueSerde;
 
     private long memBufferSize = 0L;
@@ -99,12 +99,12 @@ public final class InMemoryTimeOrderedKeyValueBuffer<K, V> implements TimeOrdere
     public static class Builder<K, V> implements StoreBuilder<InMemoryTimeOrderedKeyValueBuffer<K, V>> {
 
         private final String storeName;
-        private final Serde<K> keySerde;
+        private final Serde<? extends K> keySerde;
         private final Serde<V> valueSerde;
         private boolean loggingEnabled = true;
         private Map<String, String> logConfig = new HashMap<>();
 
-        public Builder(final String storeName, final Serde<K> keySerde, final Serde<V> valueSerde) {
+        public Builder(final String storeName, final Serde<? extends K> keySerde, final Serde<V> valueSerde) {
             this.storeName = storeName;
             this.keySerde = keySerde;
             this.valueSerde = valueSerde;
@@ -148,7 +148,7 @@ public final class InMemoryTimeOrderedKeyValueBuffer<K, V> implements TimeOrdere
 
         @Override
         public InMemoryTimeOrderedKeyValueBuffer<K, V> build() {
-            return new InMemoryTimeOrderedKeyValueBuffer<>(storeName, loggingEnabled, keySerde, valueSerde);
+            return new InMemoryTimeOrderedKeyValueBuffer<K, V>(storeName, loggingEnabled, keySerde, valueSerde);
         }
 
         @Override
@@ -169,7 +169,7 @@ public final class InMemoryTimeOrderedKeyValueBuffer<K, V> implements TimeOrdere
 
     private InMemoryTimeOrderedKeyValueBuffer(final String storeName,
                                               final boolean loggingEnabled,
-                                              final Serde<K> keySerde,
+                                              final Serde<? extends K> keySerde,
                                               final Serde<V> valueSerde) {
         this.storeName = storeName;
         this.loggingEnabled = loggingEnabled;

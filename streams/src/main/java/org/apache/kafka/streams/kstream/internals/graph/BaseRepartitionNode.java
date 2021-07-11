@@ -89,7 +89,7 @@ public abstract class BaseRepartitionNode<K, V> extends GraphNode {
     public abstract static class BaseRepartitionNodeBuilder<K, V, T extends BaseRepartitionNode<K, V>> {
         protected String nodeName;
         protected ProcessorParameters<K, V, ?, ?> processorParameters;
-        protected Serde<K> keySerde;
+        protected Serde<? extends K> keySerde;
         protected Serde<V> valueSerde;
         protected String sinkName;
         protected String sourceName;
@@ -102,7 +102,7 @@ public abstract class BaseRepartitionNode<K, V> extends GraphNode {
             return this;
         }
 
-        public BaseRepartitionNodeBuilder<K, V, T> withKeySerde(final Serde<K> keySerde) {
+        public BaseRepartitionNodeBuilder<K, V, T> withKeySerde(final Serde<? extends K> keySerde) {
             this.keySerde = keySerde;
             return this;
         }

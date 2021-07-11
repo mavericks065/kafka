@@ -138,7 +138,7 @@ public class KStreamImpl<K, V> extends AbstractStream<K, V> implements KStream<K
     private OptimizableRepartitionNode<K, V> repartitionNode;
 
     KStreamImpl(final String name,
-                final Serde<K> keySerde,
+                final Serde<? extends K> keySerde,
                 final Serde<V> valueSerde,
                 final Set<String> subTopologySourceNodes,
                 final boolean repartitionRequired,
@@ -606,7 +606,7 @@ public class KStreamImpl<K, V> extends AbstractStream<K, V> implements KStream<K
             .newProcessorName(REPARTITION_NAME);
 
         final Serde<V> valueSerde = repartitionedInternal.valueSerde() == null ? this.valueSerde : repartitionedInternal.valueSerde();
-        final Serde<K> keySerde = repartitionedInternal.keySerde() == null ? this.keySerde : repartitionedInternal.keySerde();
+        final Serde<? extends K> keySerde = repartitionedInternal.keySerde() == null ? this.keySerde : repartitionedInternal.keySerde();
 
         final UnoptimizableRepartitionNodeBuilder<K, V> unoptimizableRepartitionNodeBuilder = UnoptimizableRepartitionNode
             .unoptimizableRepartitionNodeBuilder();
@@ -629,7 +629,7 @@ public class KStreamImpl<K, V> extends AbstractStream<K, V> implements KStream<K
         final Set<String> sourceNodes = new HashSet<>();
         sourceNodes.add(unoptimizableRepartitionNode.nodeName());
 
-        return new KStreamImpl<>(
+        return new KStreamImpl<K, V>(
             repartitionSourceName,
             keySerde,
             valueSerde,
@@ -721,7 +721,7 @@ public class KStreamImpl<K, V> extends AbstractStream<K, V> implements KStream<K
         final MaterializedInternal<K, V, KeyValueStore<Bytes, byte[]>> materializedInternal =
             new MaterializedInternal<>(materialized, builder, TO_KTABLE_NAME);
 
-        final Serde<K> keySerdeOverride = materializedInternal.keySerde() == null
+        final Serde<? extends K> keySerdeOverride = materializedInternal.keySerde() == null
             ? keySerde
             : materializedInternal.keySerde();
         final Serde<V> valueSerdeOverride = materializedInternal.valueSerde() == null
@@ -799,6 +799,28 @@ public class KStreamImpl<K, V> extends AbstractStream<K, V> implements KStream<K
             true,
             selectKeyMapNode,
             builder);
+    }
+
+    @Override
+    public <KR, KG extends KR> KGroupedStream<KR, V> groupBy2(
+            final KeyValueMapper<? super K, ? super V, KG> keySelector,
+            final Grouped<KG, V> grouped) {
+        Objects.requireNonNull(keySelector, "keySelector can't be null");
+        Objects.requireNonNull(grouped, "grouped can't be null");
+
+        final GroupedInternal<KG, V> groupedInternal = new GroupedInternal<>(grouped);
+        final ProcessorGraphNode<K, V> selectKeyMapNode = internalSelectKey(keySelector, new NamedInternal(groupedInternal.name()));
+        selectKeyMapNode.keyChangingOperation(true);
+
+        builder.addGraphNode(graphNode, selectKeyMapNode);
+
+        return new KGroupedStreamImpl<>(
+                selectKeyMapNode.nodeName(),
+                subTopologySourceNodes,
+                groupedInternal,
+                true,
+                selectKeyMapNode,
+                builder);
     }
 
     @Override
@@ -974,7 +996,7 @@ public class KStreamImpl<K, V> extends AbstractStream<K, V> implements KStream<K
     private KStreamImpl<K, V> repartitionForJoin(final String repartitionName,
                                                  final Serde<K> keySerdeOverride,
                                                  final Serde<V> valueSerdeOverride) {
-        final Serde<K> repartitionKeySerde = keySerdeOverride != null ? keySerdeOverride : keySerde;
+        final Serde<? extends K> repartitionKeySerde = keySerdeOverride != null ? keySerdeOverride : keySerde;
         final Serde<V> repartitionValueSerde = valueSerdeOverride != null ? valueSerdeOverride : valueSerde;
         final OptimizableRepartitionNodeBuilder<K, V> optimizableRepartitionNodeBuilder =
             OptimizableRepartitionNode.optimizableRepartitionNodeBuilder();
@@ -1005,7 +1027,7 @@ public class KStreamImpl<K, V> extends AbstractStream<K, V> implements KStream<K
     }
 
     static <K1, V1, RN extends BaseRepartitionNode<K1, V1>> String createRepartitionedSource(final InternalStreamsBuilder builder,
-                                                                                             final Serde<K1> keySerde,
+                                                                                             final Serde<? extends K1> keySerde,
                                                                                              final Serde<V1> valueSerde,
                                                                                              final String repartitionTopicNamePrefix,
                                                                                              final StreamPartitioner<K1, V1> streamPartitioner,

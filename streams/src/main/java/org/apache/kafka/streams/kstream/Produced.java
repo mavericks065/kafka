@@ -33,12 +33,12 @@ import java.util.Objects;
  */
 public class Produced<K, V> implements NamedOperation<Produced<K, V>> {
 
-    protected Serde<K> keySerde;
+    protected Serde<? extends K> keySerde;
     protected Serde<V> valueSerde;
     protected StreamPartitioner<? super K, ? super V> partitioner;
     protected String processorName;
 
-    private Produced(final Serde<K> keySerde,
+    private Produced(final Serde<? extends K> keySerde,
                      final Serde<V> valueSerde,
                      final StreamPartitioner<? super K, ? super V> partitioner,
                      final String processorName) {
@@ -64,7 +64,7 @@ public class Produced<K, V> implements NamedOperation<Produced<K, V>> {
      * @return  A new {@link Produced} instance configured with keySerde and valueSerde
      * @see KStream#to(String, Produced)
      */
-    public static <K, V> Produced<K, V> with(final Serde<K> keySerde,
+    public static <K, V> Produced<K, V> with(final Serde<? extends K> keySerde,
                                              final Serde<V> valueSerde) {
         return new Produced<>(keySerde, valueSerde, null, null);
     }
@@ -82,7 +82,7 @@ public class Produced<K, V> implements NamedOperation<Produced<K, V>> {
      * @return  A new {@link Produced} instance configured with keySerde, valueSerde, and partitioner
      * @see KStream#to(String, Produced)
      */
-    public static <K, V> Produced<K, V> with(final Serde<K> keySerde,
+    public static <K, V> Produced<K, V> with(final Serde<? extends K> keySerde,
                                              final Serde<V> valueSerde,
                                              final StreamPartitioner<? super K, ? super V> partitioner) {
         return new Produced<>(keySerde, valueSerde, partitioner, null);

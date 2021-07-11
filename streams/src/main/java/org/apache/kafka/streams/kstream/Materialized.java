@@ -59,7 +59,7 @@ public class Materialized<K, V, S extends StateStore> {
     protected StoreSupplier<S> storeSupplier;
     protected String storeName;
     protected Serde<V> valueSerde;
-    protected Serde<K> keySerde;
+    protected Serde<? extends K> keySerde;
     protected boolean loggingEnabled = true;
     protected boolean cachingEnabled = true;
     protected Map<String, String> topicConfig = new HashMap<>();
@@ -164,7 +164,7 @@ public class Materialized<K, V, S extends StateStore> {
      * @param <S>           store type
      * @return a new {@link Materialized} instance with the given key and value serdes
      */
-    public static <K, V, S extends StateStore> Materialized<K, V, S> with(final Serde<K> keySerde,
+    public static <K, V, S extends StateStore> Materialized<K, V, S> with(final Serde<? extends K> keySerde,
                                                                           final Serde<V> valueSerde) {
         return new Materialized<K, V, S>((String) null).withKeySerde(keySerde).withValueSerde(valueSerde);
     }
@@ -188,7 +188,7 @@ public class Materialized<K, V, S extends StateStore> {
      *                  serde from configs will be used
      * @return itself
      */
-    public Materialized<K, V, S> withKeySerde(final Serde<K> keySerde) {
+    public Materialized<K, V, S> withKeySerde(final Serde<? extends K> keySerde) {
         this.keySerde = keySerde;
         return this;
     }

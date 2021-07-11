@@ -34,7 +34,7 @@ import static org.apache.kafka.streams.kstream.internals.graph.OptimizableRepart
 class GroupedStreamAggregateBuilder<K, V> {
 
     private final InternalStreamsBuilder builder;
-    private final Serde<K> keySerde;
+    private final Serde<? extends K> keySerde;
     private final Serde<V> valueSerde;
     private final boolean repartitionRequired;
     private final String userProvidedRepartitionTopicName;
@@ -50,7 +50,7 @@ class GroupedStreamAggregateBuilder<K, V> {
     final Initializer<V> reduceInitializer = () -> null;
 
     GroupedStreamAggregateBuilder(final InternalStreamsBuilder builder,
-                                  final GroupedInternal<K, V> groupedInternal,
+                                  final GroupedInternal<? extends K, V> groupedInternal,
                                   final boolean repartitionRequired,
                                   final Set<String> subTopologySourceNodes,
                                   final String name,

@@ -29,12 +29,12 @@ import org.apache.kafka.common.serialization.Serde;
  */
 public class Grouped<K, V> implements NamedOperation<Grouped<K, V>> {
 
-    protected final Serde<K> keySerde;
+    protected final Serde<? extends K> keySerde;
     protected final Serde<V> valueSerde;
     protected final String name;
 
     private Grouped(final String name,
-                    final Serde<K> keySerde,
+                    final Serde<? extends K> keySerde,
                     final Serde<V> valueSerde) {
         this.name = name;
         this.keySerde = keySerde;
@@ -116,7 +116,7 @@ public class Grouped<K, V> implements NamedOperation<Grouped<K, V>> {
      * @see KStream#groupBy(KeyValueMapper, Grouped)
      * @see KTable#groupBy(KeyValueMapper, Grouped)
      */
-    public static <K, V> Grouped<K, V> with(final Serde<K> keySerde,
+    public static <K, V> Grouped<K, V> with(final Serde<? extends K> keySerde,
                                             final Serde<V> valueSerde) {
         return new Grouped<>(null, keySerde, valueSerde);
     }

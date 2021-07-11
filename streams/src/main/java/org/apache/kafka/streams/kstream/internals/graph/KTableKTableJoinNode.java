@@ -32,7 +32,7 @@ import java.util.Properties;
  */
 public class KTableKTableJoinNode<K, V1, V2, VR> extends BaseJoinProcessorNode<K, Change<V1>, Change<V2>, Change<VR>> {
 
-    private final Serde<K> keySerde;
+    private final Serde<? extends K> keySerde;
     private final Serde<VR> valueSerde;
     private final String[] joinThisStoreNames;
     private final String[] joinOtherStoreNames;
@@ -44,7 +44,7 @@ public class KTableKTableJoinNode<K, V1, V2, VR> extends BaseJoinProcessorNode<K
                          final ProcessorParameters<K, Change<VR>, ?, ?> joinMergeProcessorParameters,
                          final String thisJoinSide,
                          final String otherJoinSide,
-                         final Serde<K> keySerde,
+                         final Serde<? extends K> keySerde,
                          final Serde<VR> valueSerde,
                          final String[] joinThisStoreNames,
                          final String[] joinOtherStoreNames,
@@ -144,7 +144,7 @@ public class KTableKTableJoinNode<K, V1, V2, VR> extends BaseJoinProcessorNode<K
         private ProcessorParameters<K, Change<V2>, ?, ?> joinOtherProcessorParameters;
         private String thisJoinSide;
         private String otherJoinSide;
-        private Serde<K> keySerde;
+        private Serde<? extends K> keySerde;
         private Serde<VR> valueSerde;
         private String[] joinThisStoreNames;
         private String[] joinOtherStoreNames;
@@ -179,7 +179,7 @@ public class KTableKTableJoinNode<K, V1, V2, VR> extends BaseJoinProcessorNode<K
             return this;
         }
 
-        public KTableKTableJoinNodeBuilder<K, V1, V2, VR> withKeySerde(final Serde<K> keySerde) {
+        public KTableKTableJoinNodeBuilder<K, V1, V2, VR> withKeySerde(final Serde<? extends K> keySerde) {
             this.keySerde = keySerde;
             return this;
         }
@@ -210,7 +210,7 @@ public class KTableKTableJoinNode<K, V1, V2, VR> extends BaseJoinProcessorNode<K
         }
 
         public KTableKTableJoinNode<K, V1, V2, VR> build() {
-            return new KTableKTableJoinNode<>(
+            return new KTableKTableJoinNode<K, V1, V2, VR>(
                 nodeName,
                 joinThisProcessorParameters,
                 joinOtherProcessorParameters,

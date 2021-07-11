@@ -44,7 +44,7 @@ public class SubscriptionWrapperSerde<K> extends WrappingNullableSerde<Subscript
 
         private final Supplier<String> primaryKeySerializationPseudoTopicSupplier;
         private String primaryKeySerializationPseudoTopic = null;
-        private Serializer<K> primaryKeySerializer;
+        private Serializer<? extends K> primaryKeySerializer;
 
         SubscriptionWrapperSerializer(final Supplier<String> primaryKeySerializationPseudoTopicSupplier,
                                       final Serializer<K> primaryKeySerializer) {
@@ -104,7 +104,7 @@ public class SubscriptionWrapperSerde<K> extends WrappingNullableSerde<Subscript
 
         private final Supplier<String> primaryKeySerializationPseudoTopicSupplier;
         private String primaryKeySerializationPseudoTopic = null;
-        private Deserializer<K> primaryKeyDeserializer;
+        private Deserializer<? extends K> primaryKeyDeserializer;
 
         SubscriptionWrapperDeserializer(final Supplier<String> primaryKeySerializationPseudoTopicSupplier,
                                         final Deserializer<K> primaryKeyDeserializer) {

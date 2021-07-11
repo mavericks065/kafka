@@ -52,13 +52,13 @@ import java.util.Objects;
  */
 public class Consumed<K, V> implements NamedOperation<Consumed<K, V>> {
 
-    protected Serde<K> keySerde;
+    protected Serde<? extends K> keySerde;
     protected Serde<V> valueSerde;
     protected TimestampExtractor timestampExtractor;
     protected Topology.AutoOffsetReset resetPolicy;
     protected String processorName;
 
-    private Consumed(final Serde<K> keySerde,
+    private Consumed(final Serde<? extends K> keySerde,
                      final Serde<V> valueSerde,
                      final TimestampExtractor timestampExtractor,
                      final Topology.AutoOffsetReset resetPolicy,
@@ -111,7 +111,7 @@ public class Consumed<K, V> implements NamedOperation<Consumed<K, V>> {
      * @param <V>        value type
      * @return a new instance of {@link Consumed}
      */
-    public static <K, V> Consumed<K, V> with(final Serde<K> keySerde,
+    public static <K, V> Consumed<K, V> with(final Serde<? extends K> keySerde,
                                              final Serde<V> valueSerde) {
         return new Consumed<>(keySerde, valueSerde, null, null, null);
     }

@@ -49,7 +49,7 @@ class KGroupedStreamImpl<K, V> extends AbstractStream<K, V> implements KGroupedS
 
     KGroupedStreamImpl(final String name,
                        final Set<String> subTopologySourceNodes,
-                       final GroupedInternal<K, V> groupedInternal,
+                       final GroupedInternal<? extends K, V> groupedInternal,
                        final boolean repartitionRequired,
                        final GraphNode graphNode,
                        final InternalStreamsBuilder builder) {
@@ -57,12 +57,12 @@ class KGroupedStreamImpl<K, V> extends AbstractStream<K, V> implements KGroupedS
         this.repartitionRequired = repartitionRequired;
         this.userProvidedRepartitionTopicName = groupedInternal.name();
         this.aggregateBuilder = new GroupedStreamAggregateBuilder<>(
-            builder,
-            groupedInternal,
-            repartitionRequired,
-            subTopologySourceNodes,
-            name,
-            graphNode
+                builder,
+                groupedInternal,
+                repartitionRequired,
+                subTopologySourceNodes,
+                name,
+                graphNode
         );
     }
 
@@ -192,14 +192,14 @@ class KGroupedStreamImpl<K, V> extends AbstractStream<K, V> implements KGroupedS
     public <W extends Window> TimeWindowedKStream<K, V> windowedBy(final Windows<W> windows) {
 
         return new TimeWindowedKStreamImpl<>(
-            windows,
-            builder,
-            subTopologySourceNodes,
-            name,
-            keySerde,
-            valueSerde,
-            aggregateBuilder,
-            graphNode
+                windows,
+                builder,
+                subTopologySourceNodes,
+                name,
+                keySerde,
+                valueSerde,
+                aggregateBuilder,
+                graphNode
         );
     }
 
@@ -222,14 +222,14 @@ class KGroupedStreamImpl<K, V> extends AbstractStream<K, V> implements KGroupedS
     public SessionWindowedKStream<K, V> windowedBy(final SessionWindows windows) {
 
         return new SessionWindowedKStreamImpl<>(
-            windows,
-            builder,
-            subTopologySourceNodes,
-            name,
-            keySerde,
-            valueSerde,
-            aggregateBuilder,
-            graphNode
+                windows,
+                builder,
+                subTopologySourceNodes,
+                name,
+                keySerde,
+                valueSerde,
+                aggregateBuilder,
+                graphNode
         );
     }
 
